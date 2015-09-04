@@ -1,0 +1,11 @@
+Package: gerbiochem
+Type: Package
+Title: Data analyzis and visualization
+Version: 0.0.1
+Date: 2015-08-03
+Author: Anton Shekhov <sh.anton2111@gmail.com>
+Maintainer: Anton Shekhov <sh.anton2111@gmail.com>
+Description: Working with LC/GS - MS data, transforming it to readable format. For this package to work you need to instal xcms package by \href{http://www.bioconductor.org/packages/release/bioc/html/xcms.html}{bioconductor})
+License: GPL
+Depends: xcms, XLConnect
+
