@@ -80,7 +80,59 @@ def input_handler (argv):
         
         return {'i':inputFolder, 'f':inputFile, 'e':eic, 'r':r}
 
+def is_In_Range (test, arr, range):
+        #print (test)
+        result = False
+        for a in arr:
+                if test >= a-range and test <= a+range: return a
+        return result
+        
+def parse_line (line, eic, r):
+        parsed = line.split(",")
+        rt = float (parsed[0])
+        # Building dictionary
+        dic = {'signal':0}
+        for e in eic:
+                dic[e]=0
+        # If number is in range, put it into dictionary
+        for p in parsed:
+                pair = p.split(" ")
+                if len(pair) != 2: continue
+                isIn = is_In_Range (float(pair[0]), eic, r)
+                if not isIn: continue
+                else: dic[isIn] += float(pair[1])
+        # If all values in EIC is filled, sum them into signal value
+        temp = 0
+        for e in eic:
+                if dic[e] == 0: temp = 0; break
+                else: temp += dic[e]
+        dic['signal']=temp
+        return (rt, dic)
+        
+def parse_TIC (path, eic, r):
+        # Open file
+        f = open (path , 'r')
+        dic = {}
+        arr = []
+        for line in f.readlines ():
+                rt, v = parse_line (line, eic, r)
+                arr.append (rt)
+                dic[rt] = v
+        f.close()
+        return arr, dic
 
+def report_to_csv (dic, arr, path):
+        """ Write data into csv file """
+        f = open (path, 'w', newline='')
+        writer = csv.writer(f)
+        header = ['rt'] + list (dic[arr[0]].keys())
+        writer.writerow (header)
+        
+        arr.sort()
+        for a in arr:
+                line = [a] + list (dic[a].values())
+                writer.writerow (line)
+        f.close()
         
 def main (argv):
         # Proceed options've been passed through the function call
@@ -91,6 +143,14 @@ def main (argv):
         inputFile=input['f']
         eic=input['e']
         r=input['r']
+        
+        # Location of the file
+        path = os.path.join (inputFolder, inputFile)
+        # Open file and parse it
+        eicA, eicD = parse_TIC (path, eic, r)
+        # Location of the output file
+        oPath = os.path.join (inputFolder, inputFile.split(".")[0]+".csv")
+        report_to_csv (eicD, eicA, oPath)
         
         
         
