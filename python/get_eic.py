@@ -107,6 +107,7 @@ def parse_line (line, eic, r):
                 if dic[e] == 0: temp = 0; break
                 else: temp += dic[e]
         dic['signal']=temp
+        #dic = sorted (dic.keys(), key=str)
         return (rt, dic)
         
 def parse_TIC (path, eic, r):
@@ -125,12 +126,16 @@ def report_to_csv (dic, arr, path):
         """ Write data into csv file """
         f = open (path, 'w', newline='')
         writer = csv.writer(f)
-        header = ['rt'] + list (dic[arr[0]].keys())
+        
+        header = ['rt'] + sorted (list (dic[arr[0]].keys()), key=str)
         writer.writerow (header)
         
         arr.sort()
         for a in arr:
-                line = [a] + list (dic[a].values())
+                line = [a]
+                temp = dic[a]
+                for key in sorted (list (temp.keys()), key=str):
+                        line = line + [temp[key]]
                 writer.writerow (line)
         f.close()
         
