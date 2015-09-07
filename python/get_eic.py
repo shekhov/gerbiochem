@@ -139,6 +139,22 @@ def report_to_csv (dic, arr, path):
                 writer.writerow (line)
         f.close()
         
+def run_on_folder (folder, eic, r):
+        """ Function for access from other scripts """
+        for f in os.listdir (os.path.join(os.getcwd(), folder)):
+                l = "python get_eic.py -i Exports -f "+f+" -e 74-87"
+                # Location of the file
+                inputFolder = os.path.join(os.getcwd(), folder)
+                path = os.path.join (inputFolder, f)
+                eic = eic
+                r = r
+                # Open file and parse it
+                eicA, eicD = parse_TIC (path, eic, r)
+                # Location of the output file
+                oPath = os.path.join (inputFolder, f.split(".")[0]+".csv")
+                print (l)
+                report_to_csv (eicD, eicA, oPath)
+        
 def main (argv):
         # Proceed options've been passed through the function call
         input = input_handler (argv)
